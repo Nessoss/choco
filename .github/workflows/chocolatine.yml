@@ -32,6 +32,7 @@ jobs :
           check.sh $(pwd) $(pwd)
           echo "::set-output name=report::$(cat coding-style-report.log)"
   check_program_compilation:
+    needs: check_coding_style
     runs-on: ubuntu-latest
     container: 
       image: epitechcontent/epitest-docker
@@ -55,6 +56,7 @@ jobs :
           fi
           done
   run_tests:
+    needs: check_program_compilation
     runs-on: ubuntu-latest
     container: 
       image: epitechcontent/epitest-docker
@@ -64,6 +66,7 @@ jobs :
         run: make tests_run
         timeout-minutes: 2
   push_to_mirror:
+    needs: run_tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

@@ -29,3 +29,6 @@ fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+test_run:
+	echo "wassim ca marche"
