@@ -21,13 +21,13 @@ jobs :
       - name: Run coding style checker
         id: check
         run: |
-          check.sh $(pwd) $(pwd)
+          check.sh $(pwd) $(pwd) 
           echo "::set-output name=report::$(cat coding-style-report.log)"
   check_program_compilation:
     needs: check_coding_style
     runs-on: ubuntu-latest 
     container: 
-      image: epitechcontent/epitest-docker
+      image: epitechcontent/epitest-docker 
     steps:
       - name: Checkout
         uses: actions/checkout@v2 
