@@ -30,5 +30,5 @@ fclean: clean
 
 re: fclean all
 
-test_run:
-	echo "wassim ca marche"
+tests_run:
+	echo "run test good"
