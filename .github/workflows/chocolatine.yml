@@ -1,0 +1,105 @@
+##
+## EPITECH PROJECT, 2023
+## chocolatine
+## File description:
+## chocolatine.yml
+##
+
+
+name: chocolatine
+run-name: ${{github.actor}} choco's check
+on:
+  push:
+    branches-ignore:
+      - " ga-ignore-"
+  pull_request:
+    branches-ignore:
+      - " ga-ignore-"
+jobs :
+	check_coding_style:
+		run-on: ubuntu-latest
+		container: ghcr.io/epitech/coding-style-checker:latest
+		steps:
+  - name: Checkout
+    uses: actions/checkout@v2
+
+- name: Run coding style checker
+  id: check
+  run: |
+    check.sh $(pwd) $(pwd)
+    echo "::set-output name=report::$(cat coding-style-report.log)"
+
+	- name: Display coding style errors
+	  id: errors
+	  run: |
+	    IFS=$'\n'
+	    errors=$(cat coding-style-report.log)
+	    for error in $errors
+	    do
+	      echo "::error file=$(echo $error | cut -d' ' -f1),line=$(echo $error | cut -d' ' -f2),col=$(echo $error | cut -d' ' -f3)::$(echo $error | cut -d' ' -f4-)"
+	    done
+	
+	
+	  - name: Fail if there are coding style errors
+	    run: |
+	      if [[ -n "$(cat coding-style-report.log)" ]]; then
+	        exit 1
+	      fi
+
+	jobs:
+  check_program_compilation:
+    runs-on: ubuntu-latest
+    container: 
+      image: epitechcontent/epitest-docker
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Compile the program
+        run: make
+        timeout-minutes: 2
+
+      - name: Clean up
+        run: make clean
+
+      - name: Check executables
+        run: |
+          for executable in ${EXECUTABLES[@]}; do
+            if [[ ! -x "$executable" ]]; then
+              echo "$executable does not exist or is not executable"
+              exit 1
+            fi
+          done
+
+	jobs:
+  push_to_mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GIT_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts
+
+      - name: Push to mirror repository
+        run: |
+          git remote add mirror ${{ env.MIRROR_URL }}
+          git push -https://github.com/orgs/EpitechPromo2028/teams/b-dop-200-lyn-2-1-chocolatine-wassim-el-haloui
+    if: github.event_name == 'push'
+
+  jobs:
+  run_tests:
+    runs-on: ubuntu-latest
+    container: 
+      image: epitechcontent/epitest-docker
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run tests
+        run: make tests_run
+        timeout-minutes: 2
