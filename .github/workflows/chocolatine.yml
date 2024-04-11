@@ -22,7 +22,7 @@ jobs :
         id: check
         run: |
           check.sh $(pwd) $(pwd) 
-          echo "::set-output name=report::$(cat coding-style-report.log)"
+          echo "::set-output name=report::$(cat coding-style-reports.log)"
   check_program_compilation:
     needs: check_coding_style
     runs-on: ubuntu-latest 
