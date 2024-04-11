@@ -15,5 +15,6 @@ char my_putchar(char c)
 int main(void)
 {
     char c = 'c';
+
     my_putchar(c);
 }
