@@ -14,7 +14,6 @@ char my_putchar(char c)
 
 int main(void)
 {
-    char c= 'c';
-
+    char c = 'c';
     my_putchar(c);
 }
